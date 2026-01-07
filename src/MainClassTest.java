@@ -21,4 +21,9 @@ public class MainClassTest extends MainClass {
             Assert.fail("Class number is less than 45");
         }
     }
-}
+
+    @Test
+    public void testGetClassString(){
+        Assert.assertTrue(this.getClassString().contains("hello") || this.getClassString().contains("Hello"));
+        }
+    }
