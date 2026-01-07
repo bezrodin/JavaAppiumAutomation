@@ -11,4 +11,14 @@ public class MainClassTest extends MainClass {
             Assert.fail("Local number is not 14");
         }
     }
+
+    @Test
+    public void testGetClassNumber(){
+        if (this.getClassNumber() > 45) {
+            System.out.println("Class Number is greater than 45");
+        }
+        else {
+            Assert.fail("Class number is less than 45");
+        }
+    }
 }
