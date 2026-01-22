@@ -129,7 +129,7 @@ public class FirstTest {
                 "Cannot find 'Object-oriented programming language' description searching by 'Java'",
                 15
         );
-        //You can access your Year in Review later in the More menu.
+
 
         waitForElementAndSendKeys(
                 By.id("org.wikipedia:id/search_src_text"),
@@ -193,6 +193,74 @@ public class FirstTest {
 
     }
 
+    //Homework Lesson 3 Ex3
+    @Test
+    public void testCheckResultAndCancelSearch()
+    {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' field",
+                5
+        );
+
+        //Закрываем онбординг
+        waitForElementAndClick(
+                By.xpath("//android.view.View[@content-desc='Close']"),
+                "Cannot find 'Close onboarding' button",
+                5
+        );
+
+        //Ждем пока хинт над клавиатурой исчезнет
+        waitForElementNotPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']"),
+                "Cannot find 'Object-oriented programming language' description searching by 'Java'",
+                15
+        );
+
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Nokia",
+                "Cannot find search input",
+                5);
+
+        //Проверяем, что список результато отображается
+        waitForElementPresent(
+                By.id("org.wikipedia:id/search_results_list"),
+                "Cannot find search results",
+                15
+        );
+
+        //Т.к. в задании указано "Убеждается, что найдено несколько статей", проверим что поиск вернул несколько элементов массива.
+        //Каждое изображение имеет свой индекс, по ним и выполним проверку
+        waitForElementPresent(
+                By.xpath("(//*[@resource-id='org.wikipedia:id/page_list_item_image'])[1]"),
+                "Cannot find search results",
+                15
+        );
+
+        //Если второй результат поиска имеет изображение, значит результат поиска состоит из нескольих статей
+        waitForElementPresent(
+                By.xpath("(//*[@resource-id='org.wikipedia:id/page_list_item_image'])[2]"),
+                "Cannot find search results",
+                15
+        );
+
+        //Нажимаем на кнопку очистки поля "Поиска"
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find 'Clear Search field' button",
+                5
+        );
+
+        //Проверяем, что список с результатами поиска не отображается
+        waitForElementNotPresent(
+                By.id("org.wikipedia:id/search_results_list"),
+                "Search Result still shows",
+                5
+        );
+
+    }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
