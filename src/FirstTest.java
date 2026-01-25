@@ -907,6 +907,76 @@ public class FirstTest {
     }
 
 
+    //Homework Lesson4 Ex6
+    @Test
+    public void assertTitle()
+    {
+        //Нажимаем на полу "Поиск"
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' field",
+                5
+        );
+
+        //Если появляется онбординг, то закрываем его. Если нет, переходим к следующему шагу
+        clickIfElementPresent(
+                By.xpath("//android.view.View[@content-desc='Close']"),
+                "Cannot find 'Close onboarding' button",
+                5
+        );
+
+        //Ожидаем что хинт исчез
+        waitForElementNotPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']"),
+                "Suppose user sees snack bar with text 'You can access your Year in Review later in the More menu.'",
+                5
+        );
+
+        //Вводим поисковый запрос
+        String search_line = "Java";
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                search_line,
+                "Cannot find search input",
+                5);
+
+        //Ищем результат поиска с подзаголовком 'Object-oriented programming language', т.к. Title не получается вытащить из статьи
+        String search_result_title = "Object-oriented programming language";
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='" + search_result_title + "']"),
+                "Cannot find ' " + search_result_title + "' description searching by 'Java'",
+                15
+        );
+
+        //Если после перехода на статью появляется сплеш с онбордингом, то закрываем его. Если нет, переходим к следующему шагу
+        clickIfElementPresent(
+                By.id("org.wikipedia:id/closeButton"),
+                "Cannot find 'Close Wikipedia Games onboarding' button",
+                5
+        );
+
+        //Сохраняем в переменную xpath подзаголовка
+        String title_locator = "//*[@resource-id='pcs-edit-section-title-description']";
+
+        /*
+        //Код закомментирован, т.к. использовался для проверки, что assertElementPresent не валится с ошибкой, если заголовок действительно пришел.
+        //Если не ждать появления элемента, то assertElementPresent присылает ошибку, что элемент не найден.
+
+        waitForElementPresent(By.xpath(title_locator),
+                "Title not found",
+                15);
+         */
+
+        //Проверяем пришел ли подзаголовок
+        assertElementPresent(
+                By.xpath(title_locator),
+                "Cannot find title of article");
+
+
+
+    }
+
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
@@ -1022,7 +1092,7 @@ public class FirstTest {
         // Если не нашли сразу, ждем и проверяем повторно
         while (System.currentTimeMillis() < endTime) {
             try {
-                Thread.sleep(500); // Ждем 500мс между проверками
+                Thread.sleep(100); // Ждем 500мс между проверками
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return false;
@@ -1098,7 +1168,7 @@ public class FirstTest {
     private void assertElementNotPresent(By by, String error_message){
         int amount_of_elements = getAmountOfElements(by);
         if (amount_of_elements > 0){
-            String default_message = "An element '" + by.toString() + "' suppposed to be not present";
+            String default_message = "An element '" + by.toString() + "' suppposed to be present";
             throw new AssertionError(default_message + " " + error_message);
         }
     }
@@ -1109,5 +1179,15 @@ public class FirstTest {
                                                  long timeoutInSeconds){
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         return element.getAttribute(attribute);
+    }
+
+    //Homework Lesson4 Ex6
+    private void assertElementPresent(By by,
+                                      String error_message){
+        int amount_of_elements = getAmountOfElements(by);
+        if (amount_of_elements == 0){
+            String default_message = "An element '" + by.toString() + "' supposed to be not present";
+            throw new AssertionError(default_message + " " + error_message);
+        }
     }
 }
