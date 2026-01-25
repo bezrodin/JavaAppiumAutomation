@@ -382,7 +382,6 @@ public class FirstTest {
                 "Cannot find 'Name of this list' field",
                 5);
 
-        //android:id/button1
 
         waitForElementAndClick(
                 By.id("android:id/button1"),
@@ -450,9 +449,6 @@ public class FirstTest {
         waitForElementNotPresent(By.xpath("//android.widget.TextView[@text='Java (programming language)']"),
                 "Cannot delete saved article",
                 5);
-
-
-
 
     }
 
@@ -666,6 +662,250 @@ public class FirstTest {
                 15
         );
     }
+
+    //Homework Lesson 4 Ex5
+    //Wikipedia APK version: r/50563-r-2025-12-11
+    @Test
+    public void saveTwoArticlesToMyListAndRemoveOne()
+    {
+        //Нажимаем на полу "Поиск"
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' field",
+                5
+        );
+
+        //Если появляется онбординг, то закрываем его. Если нет, переходим к следующему шагу
+        clickIfElementPresent(
+                By.xpath("//android.view.View[@content-desc='Close']"),
+                "Cannot find 'Close onboarding' button",
+                5
+        );
+
+        //Ожидаем что хинт исчез
+        waitForElementNotPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']"),
+                "Cannot find 'Object-oriented programming language' description searching by 'Java'",
+                15
+        );
+
+        //Вводим поисковый запрос
+        String search_line = "Java";
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                search_line,
+                "Cannot find search input",
+                5);
+
+        //Ищем результат поиска с подзаголовком 'Object-oriented programming language', т.к. Title не получается вытащить из статьи
+        String search_result_title = "Object-oriented programming language";
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='" + search_result_title + "']"),
+                "Cannot find ' " + search_result_title + "' description searching by 'Java'",
+                15
+        );
+
+        //Если после перехода на статью появляется сплеш с онбордингом, то закрываем его. Если нет, переходим к следующему шагу
+        clickIfElementPresent(
+                By.id("org.wikipedia:id/closeButton"),
+                "Cannot find 'Close Wikipedia Games onboarding' button",
+                5
+        );
+
+        //Нажимаем на кнопку в таббаре добавления статьи
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/page_save"),
+                "Cannot find 'Save page' button",
+                15
+        );
+
+        //На появившемся хинте, выбираем создать список
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/snackbar_action"),
+                "Cannot find snackbar action",
+                15
+        );
+
+
+        //Если появляется bottom-sheet "Move to reading list" с кнопкой "Create new" нажимаем на нее
+        clickIfElementPresent(
+                By.id("org.wikipedia:id/create_button"),
+                "Cannot find Move to reading list snackbar",
+                5
+        );
+
+        //Задаем название и описание списка
+        String name_of_list = "Favorite";
+        String description_of_list = "Read later";
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/text_input"),
+                name_of_list,
+                "Cannot find 'Name of this list' field",
+                5);
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/secondary_text_input"),
+                description_of_list,
+                "Cannot find 'Name of this list' field",
+                5);
+
+        //Сохраняем введенные значения и создаем список
+        waitForElementAndClick(
+                By.xpath("//android.widget.Button[@text='OK']"),
+                "Cannot tap OK button",
+                5
+        );
+
+        //Возвращаемся к экрану поиска
+        waitForElementAndClick(
+                By.xpath("//*[@content-desc='Navigate up']"),
+                "Unable return to leave article screen",
+                5
+        );
+
+        //Очищаем поле поиск
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Unable clear Search field",
+                5
+        );
+
+        //Проверяем что находимся на экране "Поиск"
+        waitForElementPresent(By.id("org.wikipedia:id/search_src_text"),
+                "Cannot find search screen",
+                5);
+
+        //Вводим второй запрос на поиск
+        String search_line_2 = "Python";
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                search_line_2,
+                "Cannot find search input",
+                5);
+
+        //Переходим на статью о языке программирования Python c заданным подзаголовком
+        String search_result_title_2 = "General-purpose programming language";
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='" + search_result_title_2 + "']"),
+                "Cannot find ' " + search_result_title_2 + "' description searching by '" + search_line_2 + "'",
+                15
+        );
+
+
+        //Нажимаем на кнопку в таббаре добавления статьи
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/page_save"),
+                "Cannot find 'Save page' button",
+                15
+        );
+
+        //На появившемся хинте нажимаем добавить в список
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/snackbar_action"),
+                "Cannot find snackbar action",
+                15
+        );
+
+        //Ищем созданный ранее список и нажимаем на него
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id='org.wikipedia:id/item_title' and @text='Favorite']"),
+                "Unable to add article to the list",
+                5
+        );
+
+        //Возвращаемся к экрану "Поиск"
+        waitForElementAndClick(
+                By.xpath("//*[@content-desc='Navigate up']"),
+                "Unable return to Search screen",
+                5
+        );
+
+        //Если появляется диалог с предложением залогиниться для синхронизации списков, скрываем его
+        clickIfElementPresent(
+                By.id("android:id/button2"),
+                "Cannot hide 'Sync reading lists' dialog",
+                5
+        );
+
+        //Возвращаемся к Главному экрану
+        waitForElementAndClick(
+                By.xpath("//*[@content-desc='Navigate up']"),
+                "Unable return to Main screen",
+                5
+        );
+
+        //Переходим к экрану с сохраненными списками статей
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/nav_tab_reading_lists"),
+                "Unable return to Main screen",
+                5
+        );
+
+        //Ищем созданный ранее список и нажимаем на него
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id='org.wikipedia:id/item_title' and @text='" + name_of_list +"']"),
+                "Unable find saved list",
+                5
+        );
+
+        //Закрываем Хинт "Got it" если он показался
+        clickIfElementPresent(
+                By.xpath("//android.widget.Button[@text='Got it']"),
+                "Cannot hide 'Sync reading lists' dialog",
+                5
+        );
+
+        //Проверяем что вторая статья добавилась в список
+        waitForElementPresent(By.xpath("//android.widget.TextView[@text='" + search_result_title_2 + "']"),
+                "Cannot find article title",
+                5);
+
+        //Удаляем вторую статью
+        swipeElementToLeft(
+                By.xpath("//android.widget.TextView[@text='"+ search_result_title_2 +"']"),
+                "Unable to swipe element",
+                3
+        );
+
+        //Убеждается, что вторая статья удалилась
+        waitForElementNotPresent(By.xpath("//android.widget.TextView[@text='" + search_result_title_2 + "']"),
+                "Cannot delete saved article",
+                5);
+
+
+        //Сохраняем в переменную подзаголовок со списка статей
+        String title_in_the_list = waitForElementAndGetAttribute(
+                By.xpath("//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_description']"),
+                "text",
+                "Cannot find title of article",
+                5
+        );
+
+        //Убеждаемся, что первая статья осталась и открываем ее
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='" + search_result_title + "']"),
+                "Unable find '" + search_result_title + "' article",
+                5
+        );
+
+        //Сохраняем в переменную подзаголовок со страницы статьи
+        String title_after_opening = waitForElementAndGetAttribute(
+                By.xpath("//android.view.View[@resource-id='pcs-edit-section-title-description']"),
+                "text",
+                "Cannot find title of article",
+                5
+        );
+
+        //Сравниваем что подзаголовок статьи в списке совпадает с подзаголовком на странице статьи
+        Assert.assertEquals(
+                "Article titles are mismatched",
+                title_in_the_list,
+                title_after_opening
+        );
+
+    }
+
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
