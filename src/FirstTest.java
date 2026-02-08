@@ -234,37 +234,16 @@ public class FirstTest extends CoreTestCase {
 
     @Test
     public void testAmountofNotEmptySearch(){
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find 'Search Wikipedia' field",
-                5
-        );
 
-
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        HintsPageObject HintsPageObject = new HintsPageObject(driver);
 
         String search_line = "Vashkivtsi";
-        MainPageObject.waitForElementAndSendKeys(
-                By.id("org.wikipedia:id/search_src_text"),
-                search_line,
-                "Cannot find search input",
-                5);
 
-        String search_result_locator = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title' and @text='Vashkivtsi']";
-        MainPageObject.waitForElementPresent(
-                By.xpath(search_result_locator),
-                "Cannot find anything by the request " + search_line,
-                15
-        );
-
-        int amount_of_search_results = MainPageObject.getAmountOfElements(
-                By.xpath(search_result_locator)
-        );
-
+        SearchPageObject.initSearchInput();
+        HintsPageObject.closeWelcomeOnboarding();
+        SearchPageObject.typeSearchLine(search_line);
+        int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
         Assert.assertTrue(
                 "We found too few results!",
                 amount_of_search_results > 0
@@ -274,40 +253,16 @@ public class FirstTest extends CoreTestCase {
     @Test
     public void testAmountOfEmptySearch()
     {
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find 'Search Wikipedia' field",
-                5
-        );
-
-
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        HintsPageObject HintsPageObject = new HintsPageObject(driver);
 
         String search_line = "gggggggggggg";
-        MainPageObject.waitForElementAndSendKeys(
-                By.id("org.wikipedia:id/search_src_text"),
-                search_line,
-                "Cannot find search input",
-                5);
 
-        String search_result_locator = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title' and @text='Vashkivtsi']";
-        String empty_result_label = "//*[@text='No results']";
-
-        MainPageObject.waitForElementPresent(
-                By.xpath(empty_result_label),
-                "Cannot find empty result by the request " + search_line,
-                15
-        );
-
-        MainPageObject.assertElementNotPresent(
-                By.xpath(search_result_locator),
-                "We've found some results by request " + search_line
-        );
-
+        SearchPageObject.initSearchInput();
+        HintsPageObject.closeWelcomeOnboarding();
+        SearchPageObject.typeSearchLine(search_line);
+        SearchPageObject.waitForEmptyResultsLabel();
+        SearchPageObject.assertThereIsNoResultOfSearch();
     }
 
     @Test

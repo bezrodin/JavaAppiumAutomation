@@ -11,7 +11,9 @@ public class SearchPageObject extends MainPageObject{
             SEARCH_INPUT = "org.wikipedia:id/search_src_text",
             SEARCH_BACK_BUTTON = "//*[@content-desc='Navigate up']",
             SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='{SUBSTRING}']",
-            SNACK_BAR_ELEMENT = "//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']";
+            SNACK_BAR_ELEMENT = "//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']",
+            SEARCH_RESULT_ELEMENT = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title' and @text='Vashkivtsi']",
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results']";
 
 
     public SearchPageObject(AppiumDriver driver){
@@ -94,4 +96,29 @@ public class SearchPageObject extends MainPageObject{
                 "Snack Bar is still present",
                 10);
     }
+
+    public int getAmountOfFoundArticles(){
+        this.waitForElementPresent(
+                By.xpath(SEARCH_RESULT_ELEMENT),
+                "Cannot find anything by the request",
+                15
+        );
+        return this.getAmountOfElements(By.xpath(SEARCH_RESULT_ELEMENT));
+
+    }
+
+    public void waitForEmptyResultsLabel(){
+        this.waitForElementPresent(
+                By.xpath(SEARCH_EMPTY_RESULT_ELEMENT),
+                "Cannot find empty result element",
+                15);
+    }
+
+    public void assertThereIsNoResultOfSearch(){
+        this.assertElementNotPresent(
+                By.xpath(SEARCH_RESULT_ELEMENT),
+                "We've found some results by request " + SEARCH_RESULT_ELEMENT
+        );
+    }
+
 }
