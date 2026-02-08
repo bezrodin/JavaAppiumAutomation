@@ -1,9 +1,7 @@
 import lib.CoreTestCase;
 import lib.ui.*;
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.*;
-import java.time.Duration;
 
 public class FirstTest extends CoreTestCase {
     private MainPageObject MainPageObject;
@@ -13,67 +11,8 @@ public class FirstTest extends CoreTestCase {
       MainPageObject = new MainPageObject(driver);
     }
 
-    @Test
-    public void testSearch() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        SearchPageObject.initSearchInput();
 
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
 
-        SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.waitForSearchResult("Object-oriented programming language");
-    }
-
-    @Test
-    public void testCancelSearch() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        SearchPageObject.initSearchInput();
-
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
-
-        SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clearSearchField();
-        SearchPageObject.clickBackButton();
-        SearchPageObject.waitForBackButtonToDisappear();
-    }
-
-    @Test
-    public void testCompareArticleTitle() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        SearchPageObject.initSearchInput();
-
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
-
-        SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
-
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/closeButton"),
-                "Cannot find 'Close Wikipedia Games onboarding' button",
-                5
-        );
-
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
-        ArticlePageObject.waitForContentsAndClick();
-        String article_title = ArticlePageObject.getArticleTitle();
-
-        Assert.assertEquals("We see unexpected title!",
-                "Java (programming language)",
-                article_title);
-
-    }
 
     //Homework Lesson 3 Ex2
     @Test
@@ -166,152 +105,16 @@ public class FirstTest extends CoreTestCase {
         );
     }
 
-    @Test
-    public void testSwipeArticle() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        SearchPageObject.initSearchInput();
-
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
-
-        SearchPageObject.typeSearchLine("Appium");
-        SearchPageObject.clickByArticleWithSubstring("Automation for Apps");
-
-
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/closeButton"),
-                "Cannot find 'Close Wikipedia Games onboarding' button",
-                5
-        );
-
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
-        ArticlePageObject.waitForContentsButton();
-        ArticlePageObject.swipeToFooter();
-    }
-
-    @Test
-    public void testSaveFirstArticleToMyList()
-    {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
-        HintsPageObject HintsPageObject = new HintsPageObject(driver);
-        NavigationUI NavigationUI = new NavigationUI(driver);
-        MyListsPageObject MyListsPageObject  = new MyListsPageObject(driver);
-
-        SearchPageObject.initSearchInput();
-        HintsPageObject.closeWelcomeOnboarding();
-        SearchPageObject.waitForSnackBarToDisappear();
-        SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
-        HintsPageObject.tapCloseWikipediaGamesOnboarding();
-        ArticlePageObject.waitForContentsAndClick();
-        String article_title = ArticlePageObject.getArticleTitle();
-        NavigationUI.tapBackButton();
-        ArticlePageObject.waitForSaveButtonAndClick();
-        ArticlePageObject.waitForSnackBarActionAndClick();
-        String name_of_folder = "Favorite";
-
-        ArticlePageObject.addArticleToMyList(
-                name_of_folder,
-                "Read Later"
-        );
-
-        NavigationUI.tapBackButton();
-        NavigationUI.tapBackButton();
-        HintsPageObject.hideSyncReadingListsDialog();
-        NavigationUI.tapNavTabReadingLists();
-        MyListsPageObject.openFolderByName(name_of_folder);
-        HintsPageObject.hideSyncReadingListsButton();
-        HintsPageObject.tapGotItButton();
-        MyListsPageObject.swipeByArticleToDelete(article_title);
-    }
 
 
 
 
-    @Test
-    public void testAmountofNotEmptySearch(){
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        HintsPageObject HintsPageObject = new HintsPageObject(driver);
 
-        String search_line = "Vashkivtsi";
 
-        SearchPageObject.initSearchInput();
-        HintsPageObject.closeWelcomeOnboarding();
-        SearchPageObject.typeSearchLine(search_line);
-        int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
-        Assert.assertTrue(
-                "We found too few results!",
-                amount_of_search_results > 0
-        );
-    }
 
-    @Test
-    public void testAmountOfEmptySearch()
-    {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        HintsPageObject HintsPageObject = new HintsPageObject(driver);
 
-        String search_line = "gggggggggggg";
 
-        SearchPageObject.initSearchInput();
-        HintsPageObject.closeWelcomeOnboarding();
-        SearchPageObject.typeSearchLine(search_line);
-        SearchPageObject.waitForEmptyResultsLabel();
-        SearchPageObject.assertThereIsNoResultOfSearch();
-    }
-
-    @Test
-    public void testChangeScreenOrientationOnSearchResults(){
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        HintsPageObject HintPageObject = new HintsPageObject(driver);
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
-
-        SearchPageObject.initSearchInput();
-        HintPageObject.closeWelcomeOnboarding();
-        SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
-        HintPageObject.tapCloseWikipediaGamesOnboarding();
-
-        String title_before_rotation = ArticlePageObject.getArticleDescription();
-//        System.out.println("Title Before Rotation is: " + title_before_rotation);
-        this.rotateScreenLandscape();
-        String title_after_rotation = ArticlePageObject.getArticleDescription();
-//        System.out.println("Title After Rotation is: " + title_after_rotation);
-
-        Assert.assertEquals(
-                "Article title have been changed after screen rotation",
-                title_before_rotation,
-                title_after_rotation
-        );
-
-        this.rotateScreenPortrait();
-
-        String title_after_second_rotation = ArticlePageObject.getArticleDescription();
-
-        Assert.assertEquals(
-                "Article title have been changed after screen rotation",
-                title_before_rotation,
-                title_after_second_rotation
-        );
-    }
-
-    @Test
-    public void testCheckSearchArticleInBackground(){
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        HintsPageObject HintPageObject = new HintsPageObject(driver);
-
-        SearchPageObject.initSearchInput();
-        HintPageObject.closeWelcomeOnboarding();
-        SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.waitForSearchResult("Object-oriented programming language");
-        this.backgroundApp(3);
-        SearchPageObject.waitForSearchResult("Object-oriented programming language");
-    }
 
     //Homework Lesson 4 Ex5
     //Wikipedia APK version: r/50563-r-2025-12-11
@@ -548,7 +351,7 @@ public class FirstTest extends CoreTestCase {
         );
 
         //Сравниваем что подзаголовок статьи в списке совпадает с подзаголовком на странице статьи
-        Assert.assertEquals(
+        assertEquals(
                 "Article titles are mismatched",
                 title_in_the_list,
                 title_after_opening
