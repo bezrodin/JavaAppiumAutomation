@@ -13,7 +13,8 @@ public class ArticlePageObject extends MainPageObject{
     SNACK_BAR_ACTION = "org.wikipedia:id/snackbar_action",
     NAME_OF_LIST_FIELD = "org.wikipedia:id/text_input",
     NAME_OF_LIST_DESCRIPTION = "org.wikipedia:id/secondary_text_input",
-    OK_BUTTON = "android:id/button1"
+    OK_BUTTON = "android:id/button1",
+    ARTICLE_DESCRIPTION = "//android.view.View[@resource-id='pcs-edit-section-title-description']"
     ;
 
 
@@ -56,10 +57,23 @@ public class ArticlePageObject extends MainPageObject{
                 15);
     }
 
+    public WebElement waitForTitleDescriptionElement(){
+        return this.waitForElementPresent(
+                By.xpath(ARTICLE_DESCRIPTION),
+                "Cannot find Article Title",
+                15);
+    }
+
     public String getArticleTitle(){
         WebElement title_element = waitForTitleElement();
         System.out.println(title_element.getAttribute("text"));
         return title_element.getAttribute("text");
+    }
+
+    public String getArticleDescription(){
+        WebElement title_description_element = waitForTitleDescriptionElement();
+        System.out.println(title_description_element.getAttribute("text"));
+        return title_description_element.getAttribute("text");
     }
 
     public void swipeToFooter(){
@@ -89,7 +103,7 @@ public class ArticlePageObject extends MainPageObject{
                "Cannot tap OK button",
                5
        );
-
    }
+
 
 }

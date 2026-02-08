@@ -267,66 +267,21 @@ public class FirstTest extends CoreTestCase {
 
     @Test
     public void testChangeScreenOrientationOnSearchResults(){
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find 'Search Wikipedia' field",
-                5
-        );
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        HintsPageObject HintPageObject = new HintsPageObject(driver);
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
 
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
+        SearchPageObject.initSearchInput();
+        HintPageObject.closeWelcomeOnboarding();
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        HintPageObject.tapCloseWikipediaGamesOnboarding();
 
-        MainPageObject.waitForElementNotPresent(
-                By.xpath("//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']"),
-                "Cannot find 'Object-oriented programming language' description searching by 'Java'",
-                15
-        );
-
-
-        String search_line = "Java";
-        MainPageObject.waitForElementAndSendKeys(
-                By.id("org.wikipedia:id/search_src_text"),
-                search_line,
-                "Cannot find search input",
-                5);
-
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='Object-oriented programming language']"),
-                "Cannot find 'Object-oriented programming language' description searching by " + search_line,
-                15
-        );
-
-        MainPageObject.clickIfElementPresent(
-                By.id("org.wikipedia:id/closeButton"),
-                "Cannot find 'Close Wikipedia Games onboarding' button",
-                5
-        );
-
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//*[@text='Got it']"),
-                "Cannot hide 'Customise your toolbar' dialog",
-                5
-        );
-
-        String article_description = "//android.view.View[@resource-id='pcs-edit-section-title-description']";
-        String title_before_rotation = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath(article_description),
-                "text",
-                "Cannot find title of article",
-                5
-        );
-
-        driver.rotate(ScreenOrientation.LANDSCAPE);
-
-        String title_after_rotation = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath(article_description),
-                "text",
-                "Cannot find title of article",
-                5
-        );
+        String title_before_rotation = ArticlePageObject.getArticleDescription();
+//        System.out.println("Title Before Rotation is: " + title_before_rotation);
+        this.rotateScreenLandscape();
+        String title_after_rotation = ArticlePageObject.getArticleDescription();
+//        System.out.println("Title After Rotation is: " + title_after_rotation);
 
         Assert.assertEquals(
                 "Article title have been changed after screen rotation",
@@ -334,67 +289,28 @@ public class FirstTest extends CoreTestCase {
                 title_after_rotation
         );
 
-        driver.rotate(ScreenOrientation.LANDSCAPE);
+        this.rotateScreenPortrait();
 
-        String title_after_second_rotation = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath(article_description),
-                "text",
-                "Cannot find description of article",
-                5
-        );
-
+        String title_after_second_rotation = ArticlePageObject.getArticleDescription();
 
         Assert.assertEquals(
                 "Article title have been changed after screen rotation",
                 title_before_rotation,
                 title_after_second_rotation
         );
-
-
     }
 
     @Test
     public void testCheckSearchArticleInBackground(){
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find 'Search Wikipedia' field",
-                5
-        );
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        HintsPageObject HintPageObject = new HintsPageObject(driver);
 
-        MainPageObject.clickIfElementPresent(
-                By.xpath("//android.view.View[@content-desc='Close']"),
-                "Cannot find 'Close onboarding' button",
-                5
-        );
-
-        MainPageObject.waitForElementNotPresent(
-                By.xpath("//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']"),
-                "Cannot find 'Object-oriented programming language' description searching by 'Java'",
-                15
-        );
-
-
-        String search_line = "Java";
-        String second_title = "Object-oriented programming language";
-        MainPageObject.waitForElementAndSendKeys(
-                By.id("org.wikipedia:id/search_src_text"),
-                search_line,
-                "Cannot find search input",
-                5);
-
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='" + second_title + "']"),
-                "Cannot find 'Object-oriented programming language' description searching by " + second_title,
-                15
-        );
-
-        driver.runAppInBackground(Duration.ofSeconds(3));
-
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='" + second_title + "']"),
-                "Cannot find article after returning from background " + second_title,
-                15
-        );
+        SearchPageObject.initSearchInput();
+        HintPageObject.closeWelcomeOnboarding();
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.waitForSearchResult("Object-oriented programming language");
+        this.backgroundApp(3);
+        SearchPageObject.waitForSearchResult("Object-oriented programming language");
     }
 
     //Homework Lesson 4 Ex5
