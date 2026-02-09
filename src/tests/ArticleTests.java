@@ -1,11 +1,8 @@
 package tests;
 
 import lib.CoreTestCase;
-import lib.ui.ArticlePageObject;
-import lib.ui.HintsPageObject;
-import lib.ui.SearchPageObject;
+import lib.ui.*;
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 public class ArticleTests extends CoreTestCase {
     @Test
@@ -42,4 +39,39 @@ public class ArticleTests extends CoreTestCase {
         ArticlePageObject.waitForContentsButton();
         ArticlePageObject.swipeToFooter();
     }
+
+    //Homework Lesson4 Ex6 (Refactored in Lesson 5 Ex 8)
+    @Test
+    public void testAssertTitle()
+    {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        HintsPageObject HintsPageObject = new HintsPageObject(driver);
+
+        //Нажимаем на полe "Поиск"
+        SearchPageObject.initSearchInput();
+
+        //Если появляется онбординг, то закрываем его. Если нет, переходим к следующему шагу
+        HintsPageObject.closeWelcomeOnboarding();
+
+        //Ожидаем что хинт исчез
+        SearchPageObject.waitForSnackBarToDisappear();
+
+        //Вводим поисковый запрос
+        SearchPageObject.typeSearchLine("Java");
+
+        //Ищем результат поиска с подзаголовком 'Object-oriented programming language', т.к. Title не получается вытащить из статьи
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+
+        //Если после перехода на статью появляется сплеш с онбордингом, то закрываем его. Если нет, переходим к следующему шагу
+        HintsPageObject.tapCloseWikipediaGamesOnboarding();
+
+        //Сохраняем в переменную xpath подзаголовка
+        String title_locator = "//*[@resource-id='pcs-edit-section-title-description']";
+
+        //Проверяем пришел ли подзаголовок
+        ArticlePageObject.assertArticleDescriptionPresent();
+
+    }
+
 }

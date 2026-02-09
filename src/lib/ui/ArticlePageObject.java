@@ -105,5 +105,11 @@ public class ArticlePageObject extends MainPageObject{
        );
    }
 
+   public void assertArticleDescriptionPresent(){
+       this.assertElementPresent(
+               By.xpath(ARTICLE_DESCRIPTION),
+               "Cannot find title of article");
+   }
+
 
 }

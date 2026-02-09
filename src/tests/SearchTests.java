@@ -66,7 +66,54 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.assertThereIsNoResultOfSearch();
     }
 
+    //Homework Lesson 3 Ex2 (Refactored in Lesson 5 Ex 8)
+    @Test
+    public void testAssertElementHasText() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        HintsPageObject HintsPageObject = new HintsPageObject(driver);
+        SearchPageObject.initSearchInput();
+        HintsPageObject.closeWelcomeOnboarding();
+        String search_placeholder = "Search Wikipedia";
+        SearchPageObject.assertCheckSearchPlaceholderText(search_placeholder);
 
+    }
 
+    //Homework Lesson 3 Ex3
+    @Test
+    public void testCheckResultAndCancelSearch() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        HintsPageObject HintsPageObject = new HintsPageObject(driver);
+
+        String search_line = "Nokia";
+
+        SearchPageObject.initSearchInput();
+
+        //Закрываем онбординг, если он появился
+        HintsPageObject.closeWelcomeOnboarding();
+
+        //Ждем пока хинт над клавиатурой исчезнет
+        SearchPageObject.waitForSnackBarToDisappear();
+
+        SearchPageObject.typeSearchLine(search_line);
+
+        //Проверяем, что список результатов отображается
+        SearchPageObject.waitForSearchResultListPresent();
+
+        //Т.к. в задании указано "Убеждается, что найдено несколько статей", проверим что поиск вернул несколько элементов массива.
+        //Каждое изображение имеет свой индекс, по ним и выполним проверку
+        String search_list_item_1 = "(//*[@resource-id='org.wikipedia:id/page_list_item_image'])[1]";
+        String search_list_item_2 = "(//*[@resource-id='org.wikipedia:id/page_list_item_image'])[2]";
+
+        SearchPageObject.waitForSearchListItem(search_list_item_1);
+
+        //Если второй результат поиска имеет изображение, значит результат поиска состоит из нескольих статей
+        SearchPageObject.waitForSearchListItem(search_list_item_2);
+
+        //Нажимаем на кнопку очистки поля "Поиска"
+        SearchPageObject.tapClearSearchFieldButton();
+
+        //Проверяем, что список с результатами поиска не отображается
+        SearchPageObject.waitForSearchResultListNotPresent();
+    }
 
 }

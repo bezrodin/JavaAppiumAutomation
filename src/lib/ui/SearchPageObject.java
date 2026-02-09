@@ -13,7 +13,10 @@ public class SearchPageObject extends MainPageObject{
             SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='{SUBSTRING}']",
             SNACK_BAR_ELEMENT = "//*[@resource-id='org.wikipedia:id/snackbar_text' and @text='You can access your Year in Review later in the More menu.']",
             SEARCH_RESULT_ELEMENT = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title' and @text='Vashkivtsi']",
-            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results']";
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results']",
+            SEARCH_PLACEHOLDER_ELEMENT = "org.wikipedia:id/search_src_text",
+            SEARCH_RESULT_LIST_ELEMENT = "org.wikipedia:id/search_results_list",
+            SEARCH_CLEAR_BUTTON = "org.wikipedia:id/search_close_btn";
 
 
     public SearchPageObject(AppiumDriver driver){
@@ -118,6 +121,54 @@ public class SearchPageObject extends MainPageObject{
         this.assertElementNotPresent(
                 By.xpath(SEARCH_RESULT_ELEMENT),
                 "We've found some results by request " + SEARCH_RESULT_ELEMENT
+        );
+    }
+
+    public void assertCheckSearchPlaceholderText(String search_placeholder){
+        this.assertElementHasText(
+                By.id(SEARCH_PLACEHOLDER_ELEMENT),
+                search_placeholder,
+                "Placeholder " + search_placeholder + " not found"
+        );
+    }
+
+    public void waitForSearchFieldPresent() {
+        this.waitForElementPresent(
+                By.id(SEARCH_PLACEHOLDER_ELEMENT),
+                "Cannot find search field",
+                15
+        );
+    }
+
+    public void waitForSearchResultListPresent() {
+        this.waitForElementPresent(
+                By.id(SEARCH_RESULT_LIST_ELEMENT),
+                "Cannot find search results",
+                15
+        );
+    }
+
+    public void waitForSearchResultListNotPresent() {
+        this.waitForElementNotPresent(
+                By.id(SEARCH_RESULT_LIST_ELEMENT),
+                "Search results are not disappeared",
+                15
+        );
+    }
+
+    public void waitForSearchListItem(String list_item){
+        this.waitForElementPresent(
+                By.xpath(list_item),
+                "Cannot find search list item",
+                15
+        );
+    }
+
+    public void tapClearSearchFieldButton(){
+        this.waitForElementAndClick(
+                By.id(SEARCH_CLEAR_BUTTON),
+                "Cannot find Clear button",
+                15
         );
     }
 

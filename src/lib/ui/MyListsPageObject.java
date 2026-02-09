@@ -2,17 +2,23 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class MyListsPageObject extends MainPageObject{
 
     public static final String
     FOLDER_BY_NAME_TPL = "//android.widget.TextView[@resource-id='org.wikipedia:id/item_title' and @text='{FOLDER_NAME}']",
-    ARTICLE_BY_TITLE_TPL = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{TITLE}']";
+    ARTICLE_BY_TITLE_TPL = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{TITLE}']",
+    ARTICLE_BY_DESCRIPTION_TPL = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_description' and @text='{DESCRIPTION}']",
+    ARTICLE_DESCRIPTION_ELEMENT = "//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_description']";
     private static String getFolderXpathByName(String name_of_folder){
         return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", name_of_folder);
     }
     private static String getSavedArticleXpathByTitle(String article_title){
         return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
+    }
+    private static String getSavedArticleXpathByDescription(String article_title){
+        return ARTICLE_BY_DESCRIPTION_TPL.replace("{DESCRIPTION}", article_title);
     }
 
 
@@ -45,6 +51,21 @@ public class MyListsPageObject extends MainPageObject{
         this.waitForArticleToDisappearByTitle(article_title);
     }
 
+    public void swipeByArticleDescriptionToDelete(String article_description){
+
+        String article_description_xpath = getSavedArticleXpathByDescription(article_description);
+        System.out.println("article_xpath from swipeByArticleToDelete is: " + article_description_xpath);
+
+        this.waitForArticleToAppearByDescription(article_description);
+
+        this.swipeElementToLeft(
+                By.xpath(article_description_xpath),
+                "Unable to swipe element",
+                3
+        );
+        this.waitForArticleToDisappearByTitle(article_description);
+    }
+
     public void waitForArticleToDisappearByTitle(String article_title){
         String article_xpath = getSavedArticleXpathByTitle(article_title);
         this.waitForElementNotPresent(By.xpath(article_xpath),
@@ -58,6 +79,38 @@ public class MyListsPageObject extends MainPageObject{
         this.waitForElementPresent(By.xpath(article_xpath),
                 "Cannot find saved article by title " + article_title,
                 15);
+    }
+
+    public void waitForArticleToDisappearByDescription(String article_description){
+        String article_xpath = getSavedArticleXpathByDescription(article_description);
+        this.waitForElementNotPresent(By.xpath(article_xpath),
+                "Saved article still present with description " + article_description,
+                15);
+    }
+
+    public void waitForArticleToAppearByDescription(String article_description){
+        String article_xpath = getSavedArticleXpathByDescription(article_description);
+        System.out.println("article_xpath from waitForArticleToAppearByTitle is:" + article_xpath);
+        this.waitForElementPresent(By.xpath(article_xpath),
+                "Cannot find saved article by description " + article_description,
+                15);
+    }
+
+    public void waitForArticleByDescriptionAndClick(String article_description){
+        String article_xpath = getSavedArticleXpathByDescription(article_description);
+        this.waitForElementAndClick(By.xpath(article_xpath),
+                "Cannot click article by description " + article_description,
+                15);
+    }
+
+    public String getArticleDescription() {
+        String text_attribute = this.waitForElementAndGetAttribute(
+                By.xpath(ARTICLE_DESCRIPTION_ELEMENT),
+                "text",
+                "Cannot find title of article",
+                5
+        );
+        return text_attribute;
     }
 
 }

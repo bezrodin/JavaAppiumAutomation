@@ -9,7 +9,8 @@ public class HintsPageObject extends MainPageObject{
             CLOSE_WELCOME_ONBOARDING_BUTTON = "//android.view.View[@content-desc='Close']",
             CANCEL_BUTTON = "android:id/button2",
             HIDE_SYNC_READING_LISTS_BUTTON = "org.wikipedia:id/buttonView",
-            GOT_IT_BUTTON = "//android.widget.Button[@text='Got it']";
+            GOT_IT_BUTTON = "//android.widget.Button[@text='Got it']",
+            SAVE_ARTICLE_HINT_BUTTON = "org.wikipedia:id/create_button";
 
     public HintsPageObject(AppiumDriver driver){
         super(driver);
@@ -57,5 +58,14 @@ public class HintsPageObject extends MainPageObject{
                 5
         );
     }
+
+    public void tapMoveToReadingListHint(){
+        this.clickIfElementPresent(
+                By.id(SAVE_ARTICLE_HINT_BUTTON),
+                "Cannot find Move to reading list snackbar",
+                5
+        );
+    }
+
 
 }
